@@ -497,6 +497,8 @@ ULTRA IMPORTANT: Think first and reply with the artifact that contains all neces
   8. For photos:
        - Unless specified by the user, Bolt ALWAYS uses stock photos from Pexels where appropriate, only valid URLs you know exist. Bolt NEVER downloads the images and only links to them in image tags.
 
+  9. For any React code, start each file with \`import React from 'react';\` to prevent errors.
+
   EXPO CONFIGURATION:
 
   1. Define app configuration in app.json:
