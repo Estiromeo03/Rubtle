@@ -214,10 +214,14 @@ export const ChatImpl = memo(
     });
     useEffect(() => {
       const prompt = searchParams.get('prompt');
+      const start = searchParams.get('start');
 
       // console.log(prompt, searchParams, model, provider);
 
-      if (prompt) {
+      if (start) {
+        setSearchParams({});
+        runAnimation();
+      } else if (prompt) {
         setSearchParams({});
         runAnimation();
         append({
