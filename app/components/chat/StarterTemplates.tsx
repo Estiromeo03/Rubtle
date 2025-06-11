@@ -22,16 +22,18 @@ const FrameworkLink: React.FC<FrameworkLinkProps> = ({ template }) => (
 
 const StarterTemplates: React.FC = () => {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <span className="text-sm text-gray-500">or start a blank app with your favorite stack</span>
-      <div className="flex justify-center">
-        <div className="flex flex-wrap justify-center items-center gap-4 max-w-sm">
-          {STARTER_TEMPLATES.map((template) => (
-            <FrameworkLink key={template.name} template={template} />
-          ))}
-        </div>
-      </div>
+   <div className="flex flex-col items-center gap-6 mt-2 mb-8">
+  <span className="text-sm text-gray-500">
+    Launch a new project using your go-to stack
+  </span>
+  <div className="flex justify-center w-full">
+    <div className="flex justify-center items-center gap-4 overflow-x-auto whitespace-nowrap px-4">
+      {STARTER_TEMPLATES.map((template) => (
+        <FrameworkLink key={template.name} template={template} />
+      ))}
     </div>
+  </div>
+</div>
   );
 };
 
