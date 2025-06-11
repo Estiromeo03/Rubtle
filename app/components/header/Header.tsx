@@ -1,12 +1,16 @@
 import { useStore } from '@nanostores/react';
 import { ClientOnly } from 'remix-utils/client-only';
+import { useState } from 'react';
 import { chatStore } from '~/lib/stores/chat';
 import { classNames } from '~/utils/classNames';
 import { HeaderActionButtons } from './HeaderActionButtons.client';
 import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
+import { SettingsButton } from '~/components/ui/SettingsButton';
+import { ControlPanel } from '~/components/@settings';
 
 export function Header() {
   const chat = useStore(chatStore);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <header
@@ -29,13 +33,20 @@ export function Header() {
           </span>
           <ClientOnly>
             {() => (
-              <div className="mr-1">
+              <div className="flex items-center gap-2 mr-1">
                 <HeaderActionButtons />
+                <SettingsButton onClick={() => setSettingsOpen(true)} />
               </div>
             )}
           </ClientOnly>
         </>
       )}
+      {!chat.started && (
+        <div className="ml-auto">
+          <ClientOnly>{() => <SettingsButton onClick={() => setSettingsOpen(true)} />}</ClientOnly>
+        </div>
+      )}
+      <ClientOnly>{() => <ControlPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />}</ClientOnly>
     </header>
   );
 }
