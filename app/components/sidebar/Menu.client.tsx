@@ -2,7 +2,6 @@ import { motion, type Variants } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
-import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
 import { Button } from '~/components/ui/Button';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem, useChatHistory } from '~/lib/persistence';
 import { cubicEasingFn } from '~/utils/easings';
@@ -507,9 +506,6 @@ export const Menu = () => {
                 )}
               </Dialog>
             </DialogRoot>
-          </div>
-          <div className="flex items-center justify-end border-t border-gray-200 dark:border-gray-800 px-4 py-3">
-            <ThemeSwitch />
           </div>
         </div>
       </motion.div>
