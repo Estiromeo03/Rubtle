@@ -14,7 +14,6 @@ export type TabType =
   | 'connection'
   | 'debug'
   | 'event-logs'
-  | 'update'
   | 'task-manager'
   | 'tab-management';
 
@@ -78,7 +77,6 @@ export const TAB_LABELS: Record<TabType, string> = {
   connection: 'Connections',
   debug: 'Debug',
   'event-logs': 'Event Logs',
-  update: 'Updates',
   'task-manager': 'Task Manager',
   'tab-management': 'Tab Management',
 };

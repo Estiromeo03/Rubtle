@@ -25,6 +25,14 @@ export function Header() {
           {/* <span className="i-bolt:logo-text?mask w-[46px] inline-block" /> */}
           <img src="/RUBTLELOGO.svg" alt="logo" className="w-[90px]" />
         </a>
+        <a
+          href="https://rubtle.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm ml-2 hover:text-purple-500"
+        >
+          Rubtle.com
+        </a>
       </div>
       {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
         <>

@@ -14,7 +14,6 @@ import {
   type Chart,
 } from 'chart.js';
 import { toast } from 'react-toastify'; // Import toast
-import { useUpdateCheck } from '~/lib/hooks/useUpdateCheck';
 import { tabConfigurationStore, type TabConfig } from '~/lib/stores/tabConfigurationStore';
 import { useStore } from 'zustand';
 
@@ -294,8 +293,7 @@ const TaskManagerTab: React.FC = () => {
     return cleanupCharts;
   }, []);
 
-  // Get update status and tab configuration
-  const { hasUpdate } = useUpdateCheck();
+  // Get tab configuration
   const tabConfig = useStore(tabConfigurationStore);
 
   const resetTabConfiguration = useCallback(() => {
@@ -307,14 +305,14 @@ const TaskManagerTab: React.FC = () => {
   useEffect(() => {
     const handleTabVisibility = () => {
       const currentConfig = tabConfig.get();
-      const controlledTabs = ['debug', 'update'];
+      const controlledTabs = ['debug'];
 
       // Update visibility based on conditions
       const updatedTabs = currentConfig.userTabs.map((tab: TabConfig) => {
         if (controlledTabs.includes(tab.id)) {
           return {
             ...tab,
-            visible: tab.id === 'debug' ? metrics.memory.percentage > 80 : hasUpdate,
+            visible: metrics.memory.percentage > 80,
           };
         }
 
@@ -332,7 +330,7 @@ const TaskManagerTab: React.FC = () => {
     return () => {
       clearInterval(checkInterval);
     };
-  }, [metrics.memory.percentage, hasUpdate, tabConfig]);
+  }, [metrics.memory.percentage, tabConfig]);
 
   // Effect to handle reset and initialization
   useEffect(() => {
