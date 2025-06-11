@@ -59,7 +59,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   return (
     <div
       className={classNames(
-        'relative bg-gray-800 text-gray-200 p-2 rounded-md border border-[#444] w-full max-w-chat mx-auto z-prompt',
+        'relative bg-gray-900 text-gray-200 p-2 rounded-md border border-[#444] w-full max-w-chat mx-auto z-prompt',
 
         /*
          * {
@@ -117,7 +117,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
       </ClientOnly>
       <div
-        className={classNames('relative border border-[#444] rounded-md bg-gray-800')}
+        className={classNames('relative border border-[#444] rounded-md bg-gray-900')}
       >
         <textarea
           ref={props.textareaRef}
@@ -265,8 +265,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           </div>
           {props.input.length > 3 ? (
             <div className="text-xs text-gray-400">
-              Use <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-800">Shift</kbd> +{' '}
-              <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-800">Return</kbd> a new line
+              Use <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-900">Shift</kbd> +{' '}
+              <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-900">Return</kbd> a new line
             </div>
           ) : null}
           <SupabaseConnection />
