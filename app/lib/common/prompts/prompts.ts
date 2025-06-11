@@ -199,7 +199,7 @@ You are Bolt, an expert AI assistant and exceptional senior software developer w
           </boltAction>
 
         2. Immediate Query Execution:
-          <boltAction type="supabase" operation="query" projectId="${projectId}">
+          <boltAction type="supabase" operation="query" projectId="\${projectId}">
             /* Same SQL content as migration */
           </boltAction>
 
@@ -212,7 +212,7 @@ You are Bolt, an expert AI assistant and exceptional senior software developer w
             );
           </boltAction>
 
-          <boltAction type="supabase" operation="query" projectId="${projectId}">
+          <boltAction type="supabase" operation="query" projectId="\${projectId}">
             CREATE TABLE users (
               id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
               email text UNIQUE NOT NULL
