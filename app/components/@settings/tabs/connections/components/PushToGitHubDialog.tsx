@@ -399,76 +399,7 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
   }
 
   if (!user) {
-    return (
-      <Dialog.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999]" />
-          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="w-[90vw] md:w-[500px]"
-            >
-              <Dialog.Content
-                className="bg-white dark:bg-bolt-elements-background-depth-1 rounded-lg p-6 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark shadow-xl"
-                aria-describedby="connection-required-description"
-              >
-                <div className="relative text-center space-y-4">
-                  <Dialog.Close asChild>
-                    <button
-                      onClick={handleClose}
-                      className="absolute right-0 top-0 p-2 rounded-lg transition-all duration-200 ease-in-out bg-transparent text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary dark:text-bolt-elements-textTertiary-dark dark:hover:text-bolt-elements-textPrimary-dark hover:bg-bolt-elements-background-depth-2 dark:hover:bg-bolt-elements-background-depth-3 focus:outline-none focus:ring-2 focus:ring-bolt-elements-borderColor dark:focus:ring-bolt-elements-borderColor-dark"
-                    >
-                      <span className="i-ph:x block w-5 h-5" aria-hidden="true" />
-                      <span className="sr-only">Close dialog</span>
-                    </button>
-                  </Dialog.Close>
-                  <motion.div
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="mx-auto w-16 h-16 rounded-xl bg-bolt-elements-background-depth-3 flex items-center justify-center text-purple-500"
-                  >
-                    <div className="i-ph:github-logo w-8 h-8" />
-                  </motion.div>
-                  <h3 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark">
-                    GitHub Connection Required
-                  </h3>
-                  <p
-                    id="connection-required-description"
-                    className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark max-w-md mx-auto"
-                  >
-                    To push your code to GitHub, you need to connect your GitHub account in Settings {'>'} Connections
-                    first.
-                  </p>
-                  <div className="pt-2 flex justify-center gap-3">
-                    <motion.button
-                      className="px-4 py-2 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark text-sm hover:bg-bolt-elements-background-depth-3 dark:hover:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleClose}
-                    >
-                      Close
-                    </motion.button>
-                    <motion.a
-                      href="/settings/connections"
-                      className="px-4 py-2 rounded-lg bg-purple-500 text-white text-sm hover:bg-purple-600 inline-flex items-center gap-2"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="i-ph:gear" />
-                      Go to Settings
-                    </motion.a>
-                  </div>
-                </div>
-              </Dialog.Content>
-            </motion.div>
-          </div>
-        </Dialog.Portal>
-      </Dialog.Root>
-    );
+    return null;
   }
 
   return (

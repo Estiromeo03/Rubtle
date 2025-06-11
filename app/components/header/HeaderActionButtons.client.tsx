@@ -6,6 +6,7 @@ import { vercelConnection } from '~/lib/stores/vercel';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { useEffect, useRef, useState } from 'react';
+import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import { streamingState } from '~/lib/stores/streaming';
 import { NetlifyDeploymentLink } from '~/components/chat/NetlifyDeploymentLink.client';
 import { VercelDeploymentLink } from '~/components/chat/VercelDeploymentLink.client';
@@ -31,6 +32,13 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const isStreaming = useStore(streamingState);
   const { handleVercelDeploy } = useVercelDeploy();
   const { handleNetlifyDeploy } = useNetlifyDeploy();
+  const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
+  const [hasGitHubConnection, setHasGitHubConnection] = useState(false);
+
+  useEffect(() => {
+    const connection = localStorage.getItem('github_connection');
+    setHasGitHubConnection(Boolean(connection));
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -145,8 +153,28 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             </Button>
           </div>
         )}
-      </div>
-      <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
+        </div>
+
+        {hasGitHubConnection ? (
+          <Button
+            className="px-4 ml-2 border border-bolt-elements-borderColor rounded-md text-sm flex items-center gap-2"
+            onClick={() => setIsPushDialogOpen(true)}
+            disabled={isStreaming}
+          >
+            <div className="i-ph:git-branch" />
+            Push to GitHub
+          </Button>
+        ) : (
+          <a
+            href="/settings/connections"
+            className="px-4 ml-2 border border-bolt-elements-borderColor rounded-md text-sm flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive"
+          >
+            <div className="i-ph:github-logo" />
+            Connect GitHub
+          </a>
+        )}
+
+        <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
@@ -172,6 +200,28 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           <div className="i-ph:code-bold" />
         </Button>
       </div>
+      <PushToGitHubDialog
+        isOpen={isPushDialogOpen}
+        onClose={() => setIsPushDialogOpen(false)}
+        onPush={async (repoName, username, token, isPrivate) => {
+          try {
+            const commitMessage =
+              prompt('Please enter a commit message:', 'Initial commit') ||
+              'Initial commit';
+            const repoUrl = await workbenchStore.pushToGitHub(
+              repoName,
+              commitMessage,
+              username,
+              token,
+              isPrivate,
+            );
+            return repoUrl;
+          } catch (error) {
+            console.error('Error pushing to GitHub:', error);
+            throw error;
+          }
+        }}
+      />
     </div>
   );
 }
