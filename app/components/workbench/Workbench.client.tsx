@@ -70,6 +70,7 @@ export const Workbench = memo(
 
     const [isSyncing, setIsSyncing] = useState(false);
     const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
+    const previewStore = usePreviewStore();
     const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>({});
 
     // const modifiedFiles = Array.from(useStore(workbenchStore.unsavedFiles).keys());
@@ -168,13 +169,18 @@ export const Workbench = memo(
           >
             <div className="absolute inset-0 px-2 lg:px-6">
               <div className="h-full flex flex-col bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor shadow-sm rounded-lg overflow-hidden">
-                <div className="flex items-center px-3 py-2 border-b border-bolt-elements-borderColor gap-1">
+                <div className="flex items-center justify-between px-3 py-2 border-b border-bolt-elements-borderColor gap-2">
                   <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
-                  <div className="ml-auto" />
-                  {selectedView === 'code' && (
-                    <div className="flex overflow-y-auto">
+
+                  <div className="flex items-center gap-3">
+                    <IconButton icon="i-ph:arrow-clockwise" title="Reload" onClick={() => previewStore.refreshAllPreviews()} />
+                    <IconButton icon="i-ph:download-simple" title="Download" onClick={() => workbenchStore.downloadZip()} />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {selectedView === 'code' && (
                       <PanelHeaderButton
-                        className="mr-1 text-sm"
+                        className="text-sm"
                         onClick={() => {
                           workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
                         }}
@@ -182,72 +188,72 @@ export const Workbench = memo(
                         <div className="i-ph:terminal" />
                         Toggle Terminal
                       </PanelHeaderButton>
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed">
-                          <div className="i-ph:box-arrow-up" />
-                          Sync & Export
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content
+                    )}
+                    <DropdownMenu.Root>
+                      <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed">
+                        <div className="i-ph:box-arrow-up" />
+                        Export/Sync
+                      </DropdownMenu.Trigger>
+                      <DropdownMenu.Content
+                        className={classNames(
+                          'min-w-[240px] z-[250]',
+                          'bg-white dark:bg-[#141414]',
+                          'rounded-lg shadow-lg',
+                          'border border-gray-200/50 dark:border-gray-800/50',
+                          'animate-in fade-in-0 zoom-in-95',
+                          'py-1',
+                        )}
+                        sideOffset={5}
+                        align="end"
+                      >
+                        <DropdownMenu.Item
                           className={classNames(
-                            'min-w-[240px] z-[250]',
-                            'bg-white dark:bg-[#141414]',
-                            'rounded-lg shadow-lg',
-                            'border border-gray-200/50 dark:border-gray-800/50',
-                            'animate-in fade-in-0 zoom-in-95',
-                            'py-1',
+                            'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
                           )}
-                          sideOffset={5}
-                          align="end"
+                          onClick={() => {
+                            workbenchStore.downloadZip();
+                          }}
                         >
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => {
-                              workbenchStore.downloadZip();
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:download-simple"></div>
-                              <span>Download Code</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={handleSyncFiles}
-                            disabled={isSyncing}
-                          >
-                            <div className="flex items-center gap-2">
-                              {isSyncing ? <div className="i-ph:spinner" /> : <div className="i-ph:cloud-arrow-down" />}
-                              <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => setIsPushDialogOpen(true)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:git-branch" />
-                              Push to GitHub
-                            </div>
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </div>
-                  )}
+                          <div className="flex items-center gap-2">
+                            <div className="i-ph:download-simple"></div>
+                            <span>Download Code</span>
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
+                          className={classNames(
+                            'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
+                          )}
+                          onClick={handleSyncFiles}
+                          disabled={isSyncing}
+                        >
+                          <div className="flex items-center gap-2">
+                            {isSyncing ? <div className="i-ph:spinner" /> : <div className="i-ph:cloud-arrow-down" />}
+                            <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
+                          className={classNames(
+                            'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
+                          )}
+                          onClick={() => setIsPushDialogOpen(true)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="i-ph:git-branch" />
+                            Push to GitHub
+                          </div>
+                        </DropdownMenu.Item>
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Root>
 
-                  <IconButton
-                    icon="i-ph:x-circle"
-                    className="-mr-1"
-                    size="xl"
-                    onClick={() => {
-                      workbenchStore.showWorkbench.set(false);
-                    }}
-                  />
+                    <IconButton
+                      icon="i-ph:x-circle"
+                      className="-mr-1"
+                      size="xl"
+                      onClick={() => {
+                        workbenchStore.showWorkbench.set(false);
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="relative flex-1 overflow-hidden">
                   <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
