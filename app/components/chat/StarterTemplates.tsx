@@ -25,7 +25,7 @@ const StarterTemplates: React.FC = () => {
     <div className="flex flex-col items-center gap-4">
       <span className="text-sm text-gray-500">Launch a new project using your go-to stack.</span>
       <div className="flex justify-center">
-        <div className="flex flex-nowrap justify-center items-center gap-4">
+        <div className="flex flex-nowrap justify-center items-center gap-4 -mt-1">
           {STARTER_TEMPLATES.map((template) => (
             <FrameworkLink key={template.name} template={template} />
           ))}
