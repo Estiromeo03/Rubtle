@@ -9,7 +9,6 @@ import type {
 } from '~/components/@settings/core/types';
 import { DEFAULT_TAB_CONFIG } from '~/components/@settings/core/constants';
 import Cookies from 'js-cookie';
-import { toggleTheme } from './theme';
 import { create } from 'zustand';
 
 export interface Shortcut {
@@ -25,7 +24,6 @@ export interface Shortcut {
 }
 
 export interface Shortcuts {
-  toggleTheme: Shortcut;
   toggleTerminal: Shortcut;
 }
 
@@ -36,15 +34,6 @@ export type ProviderSetting = Record<string, IProviderConfig>;
 
 // Simplified shortcuts store with only theme toggle
 export const shortcutsStore = map<Shortcuts>({
-  toggleTheme: {
-    key: 'd',
-    metaKey: true,
-    altKey: true,
-    shiftKey: true,
-    action: () => toggleTheme(),
-    description: 'Toggle theme',
-    isPreventDefault: true,
-  },
   toggleTerminal: {
     key: '`',
     ctrlOrMetaKey: true,
