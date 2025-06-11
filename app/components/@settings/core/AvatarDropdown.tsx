@@ -135,22 +135,6 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             <BetaLabel />
           </DropdownMenu.Item>
 
-          <DropdownMenu.Item
-            className={classNames(
-              'flex items-center gap-2 px-4 py-2.5',
-              'text-sm text-gray-700 dark:text-gray-200',
-              'hover:bg-purple-50 dark:hover:bg-purple-500/10',
-              'hover:text-purple-500 dark:hover:text-purple-400',
-              'cursor-pointer transition-all duration-200',
-              'outline-none',
-              'group',
-            )}
-            onClick={() => onSelectTab('service-status')}
-          >
-            <div className="i-ph:heartbeat w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            Service Status
-            <BetaLabel />
-          </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
