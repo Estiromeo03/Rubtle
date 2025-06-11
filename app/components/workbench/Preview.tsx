@@ -87,14 +87,12 @@ export const Preview = memo(() => {
   useEffect(() => {
     if (!activePreview) {
       setIframeUrl(undefined);
-      setDisplayPath('/');
 
       return;
     }
 
     const { baseUrl } = activePreview;
     setIframeUrl(baseUrl);
-    setDisplayPath('/');
   }, [activePreview]);
 
   const findMinPortIndex = useCallback(
