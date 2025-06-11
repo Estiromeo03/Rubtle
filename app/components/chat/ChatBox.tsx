@@ -15,13 +15,14 @@ import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportCh
 import { SupabaseConnection } from './SupabaseConnection';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import type { ProviderInfo } from '~/types/model';
+import type { ModelInfo } from '~/lib/modules/llm/types';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
   setIsModelSettingsCollapsed: (collapsed: boolean) => void;
-  provider: any;
-  providerList: any[];
-  modelList: any[];
+  provider: ProviderInfo;
+  providerList: ProviderInfo[];
+  modelList: ModelInfo[];
   apiKeys: Record<string, string>;
   isModelLoading: string | undefined;
   onApiKeysChange: (providerName: string, apiKey: string) => void;
@@ -42,9 +43,9 @@ interface ChatBoxProps {
   qrModalOpen: boolean;
   setQrModalOpen: (open: boolean) => void;
   handleFileUpload: () => void;
-  setProvider?: ((provider: ProviderInfo) => void) | undefined;
-  model?: string | undefined;
-  setModel?: ((model: string) => void) | undefined;
+  setProvider: (provider: ProviderInfo) => void;
+  model: string;
+  setModel: (model: string) => void;
   setUploadedFiles?: ((files: File[]) => void) | undefined;
   setImageDataList?: ((dataList: string[]) => void) | undefined;
   handleInputChange?: ((event: React.ChangeEvent<HTMLTextAreaElement>) => void) | undefined;
@@ -88,6 +89,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 (!LOCAL_PROVIDERS.includes(props.provider.name) || 'OpenAILike') && (
                   <APIKeyManager
                     provider={props.provider}
+                    setProvider={props.setProvider!}
+                    providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                    model={props.model!}
+                    setModel={props.setModel!}
+                    modelList={props.modelList}
                     apiKey={props.apiKeys[props.provider.name] || ''}
                     setApiKey={(key) => {
                       props.onApiKeysChange(props.provider.name, key);
