@@ -656,7 +656,7 @@ export const Preview = memo(() => {
             title={isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
           />
 
-          <div className="flex items-center relative">
+          <div className="flex items-center relative ml-auto">
             <IconButton
               icon="i-ph:list"
               onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
