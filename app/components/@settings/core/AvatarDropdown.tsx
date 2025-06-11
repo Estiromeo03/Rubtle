@@ -5,12 +5,6 @@ import { classNames } from '~/utils/classNames';
 import { profileStore } from '~/lib/stores/profile';
 import type { TabType, Profile } from './types';
 
-const BetaLabel = () => (
-  <span className="px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20 text-[10px] font-medium text-purple-600 dark:text-purple-400 ml-2">
-    BETA
-  </span>
-);
-
 interface AvatarDropdownProps {
   onSelectTab: (tab: TabType) => void;
 }
@@ -132,7 +126,6 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
           >
             <div className="i-ph:activity w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
             Task Manager
-            <BetaLabel />
           </DropdownMenu.Item>
 
         </DropdownMenu.Content>

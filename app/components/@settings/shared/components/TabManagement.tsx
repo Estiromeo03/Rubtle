@@ -44,7 +44,7 @@ const OPTIONAL_USER_TABS: TabType[] = ['profile', 'settings', 'task-manager', 'd
 const ALL_USER_TABS = [...DEFAULT_USER_TABS, ...OPTIONAL_USER_TABS];
 
 // Define which tabs are beta
-const BETA_TABS = new Set<TabType>(['task-manager']);
+const BETA_TABS = new Set<TabType>();
 
 // Beta label component
 const BetaLabel = () => (
