@@ -81,6 +81,7 @@ export const Workbench = memo(
     const unsavedFiles = useStore(workbenchStore.unsavedFiles);
     const files = useStore(workbenchStore.files);
     const selectedView = useStore(workbenchStore.currentView);
+    const followFileUpdates = useStore(workbenchStore.followFileUpdates);
 
     const isSmallViewport = useViewport(1024);
 
@@ -173,6 +174,15 @@ export const Workbench = memo(
                   <div className="ml-auto" />
                   {selectedView === 'code' && (
                     <div className="flex overflow-y-auto">
+                      <PanelHeaderButton
+                        className="mr-1 text-sm"
+                        onClick={() => {
+                          workbenchStore.toggleFollowFileUpdates();
+                        }}
+                      >
+                        <div className={`i-ph:${followFileUpdates ? 'eye' : 'eye-slash'}`} />
+                        Follow File
+                      </PanelHeaderButton>
                       <PanelHeaderButton
                         className="mr-1 text-sm"
                         onClick={() => {

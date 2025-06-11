@@ -54,6 +54,8 @@ export class WorkbenchStore {
     import.meta.hot?.data.supabaseAlert ?? atom<SupabaseAlert | undefined>(undefined);
   deployAlert: WritableAtom<DeployAlert | undefined> =
     import.meta.hot?.data.deployAlert ?? atom<DeployAlert | undefined>(undefined);
+  followFileUpdates: WritableAtom<boolean> =
+    import.meta.hot?.data.followFileUpdates ?? atom(true);
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
@@ -66,6 +68,7 @@ export class WorkbenchStore {
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
+      import.meta.hot.data.followFileUpdates = this.followFileUpdates;
 
       // Ensure binary files are properly preserved across hot reloads
       const filesMap = this.files.get();
@@ -138,6 +141,11 @@ export class WorkbenchStore {
 
   toggleTerminal(value?: boolean) {
     this.#terminalStore.toggleTerminal(value);
+  }
+
+  toggleFollowFileUpdates(value?: boolean) {
+    const current = this.followFileUpdates.get();
+    this.followFileUpdates.set(value ?? !current);
   }
 
   attachTerminal(terminal: ITerminal) {
@@ -563,12 +571,14 @@ export class WorkbenchStore {
        * This is a more complex feature that would be implemented in a future update
        */
 
-      if (this.selectedFile.value !== fullPath) {
-        this.setSelectedFile(fullPath);
-      }
+      if (!isStreaming || this.followFileUpdates.get()) {
+        if (this.selectedFile.value !== fullPath) {
+          this.setSelectedFile(fullPath);
+        }
 
-      if (this.currentView.value !== 'code') {
-        this.currentView.set('code');
+        if (this.currentView.value !== 'code') {
+          this.currentView.set('code');
+        }
       }
 
       const doc = this.#editorStore.documents.get()[fullPath];
