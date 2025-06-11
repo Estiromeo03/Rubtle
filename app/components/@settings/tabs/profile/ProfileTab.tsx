@@ -69,7 +69,7 @@ export default function ProfileTab() {
             <div
               className={classNames(
                 'w-24 h-24 rounded-full overflow-hidden',
-                'bg-gray-100 dark:bg-gray-800/50',
+                'bg-gray-100 dark:bg-gray-900/50',
                 'flex items-center justify-center',
                 'ring-1 ring-gray-200 dark:ring-gray-700',
                 'relative group',
@@ -137,7 +137,7 @@ export default function ProfileTab() {
                 onChange={(e) => handleProfileUpdate('username', e.target.value)}
                 className={classNames(
                   'w-full pl-11 pr-4 py-2.5 rounded-xl',
-                  'bg-white dark:bg-gray-800/50',
+                  'bg-white dark:bg-gray-900/50',
                   'border border-gray-200 dark:border-gray-700/50',
                   'text-gray-900 dark:text-white',
                   'placeholder-gray-400 dark:placeholder-gray-500',
@@ -161,7 +161,7 @@ export default function ProfileTab() {
                 onChange={(e) => handleProfileUpdate('bio', e.target.value)}
                 className={classNames(
                   'w-full pl-11 pr-4 py-2.5 rounded-xl',
-                  'bg-white dark:bg-gray-800/50',
+                  'bg-white dark:bg-gray-900/50',
                   'border border-gray-200 dark:border-gray-700/50',
                   'text-gray-900 dark:text-white',
                   'placeholder-gray-400 dark:placeholder-gray-500',

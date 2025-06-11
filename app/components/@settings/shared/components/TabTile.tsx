@@ -55,7 +55,7 @@ export const TabTile: React.FC<TabTileProps> = ({
                   'w-14 h-14',
                   'flex items-center justify-center',
                   'rounded-xl',
-                  'bg-gray-100 dark:bg-gray-800',
+                  'bg-gray-100 dark:bg-gray-900',
                   'ring-1 ring-gray-200 dark:ring-gray-700',
                   'group-hover:bg-purple-100 dark:group-hover:bg-gray-700/80',
                   'group-hover:ring-purple-200 dark:group-hover:ring-purple-800/30',

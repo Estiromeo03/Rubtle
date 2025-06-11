@@ -35,7 +35,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
               decoding="sync"
             />
           ) : (
-            <div className="w-full h-full rounded-full flex items-center justify-center bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500">
+            <div className="w-full h-full rounded-full flex items-center justify-center bg-white dark:bg-gray-900 text-gray-400 dark:text-gray-500">
               <div className="i-ph:question w-6 h-6" />
             </div>
           )}
@@ -61,7 +61,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
               'border-b border-gray-200/50 dark:border-gray-800/50',
             )}
           >
-            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-white dark:bg-gray-900 shadow-sm">
               {profile?.avatar ? (
                 <img
                   src={profile.avatar}
