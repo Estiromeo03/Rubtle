@@ -3,8 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
-import { ControlPanel } from '~/components/@settings/core/ControlPanel';
-import { SettingsButton } from '~/components/ui/SettingsButton';
 import { Button } from '~/components/ui/Button';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem, useChatHistory } from '~/lib/persistence';
 import { cubicEasingFn } from '~/utils/easings';
@@ -69,7 +67,6 @@ export const Menu = () => {
   const [list, setList] = useState<ChatHistoryItem[]>([]);
   const [open, setOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<DialogContent>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const profile = useStore(profileStore);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -283,10 +280,6 @@ export const Menu = () => {
     const exitThreshold = 40;
 
     function onMouseMove(event: MouseEvent) {
-      if (isSettingsOpen) {
-        return;
-      }
-
       if (event.pageX < enterThreshold) {
         setOpen(true);
       }
@@ -301,21 +294,13 @@ export const Menu = () => {
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
     };
-  }, [isSettingsOpen]);
+  }, []);
 
   const handleDuplicate = async (id: string) => {
     await duplicateCurrentChat(id);
     loadEntries(); // Reload the list after duplication
   };
 
-  const handleSettingsClick = () => {
-    setIsSettingsOpen(true);
-    setOpen(false);
-  };
-
-  const handleSettingsClose = () => {
-    setIsSettingsOpen(false);
-  };
 
   const setDialogContentWithLogging = useCallback((content: DialogContent) => {
     console.log('Setting dialog content:', content);
@@ -333,8 +318,7 @@ export const Menu = () => {
         className={classNames(
           'flex selection-accent flex-col side-menu fixed top-0 h-full',
           'bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800/50',
-          'shadow-sm text-sm',
-          isSettingsOpen ? 'z-40' : 'z-sidebar',
+          'shadow-sm text-sm z-sidebar',
         )}
       >
         <div className="h-12 flex items-center justify-between px-4 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-900/50">
@@ -524,14 +508,12 @@ export const Menu = () => {
               </Dialog>
             </DialogRoot>
           </div>
-          <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-800 px-4 py-3">
-            <SettingsButton onClick={handleSettingsClick} />
+          <div className="flex items-center justify-end border-t border-gray-200 dark:border-gray-800 px-4 py-3">
             <ThemeSwitch />
           </div>
         </div>
       </motion.div>
 
-      <ControlPanel open={isSettingsOpen} onClose={handleSettingsClose} />
     </>
   );
 };
