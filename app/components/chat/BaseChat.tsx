@@ -342,9 +342,14 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                 >
                   Create with no limits
                 </GradientText>
-                <p className="text-md lg:text-xl mb-8 text-bolt-elements-textSecondary animate-fade-in animation-delay-200">
+                <GradientText
+                  colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
+                  animationSpeed={3}
+                  showBorder={false}
+                  className="text-md lg:text-xl mb-8 animate-fade-in animation-delay-200"
+                >
                   Describe what you want with words, no code.
-                </p>
+                </GradientText>
               </div>
             )}
             <StickToBottom
