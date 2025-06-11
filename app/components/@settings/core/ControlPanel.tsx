@@ -79,7 +79,7 @@ const TAB_DESCRIPTIONS: Record<TabType, string> = {
 };
 
 // Beta status for experimental features
-const BETA_TABS = new Set<TabType>(['task-manager']);
+const BETA_TABS = new Set<TabType>();
 
 const BetaLabel = () => (
   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20">

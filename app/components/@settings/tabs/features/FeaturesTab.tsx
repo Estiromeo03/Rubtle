@@ -263,9 +263,6 @@ export default function FeaturesTab() {
             <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
               Prompt Library
             </h4>
-            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
-              Choose a prompt from the library to use as the system prompt
-            </p>
           </div>
           <select
             value={promptId}
