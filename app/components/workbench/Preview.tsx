@@ -613,7 +613,7 @@ export const Preview = memo(() => {
 
   return (
     <div ref={containerRef} className={`w-full h-full flex flex-col relative`}>
-      <div className="bg-bolt-elements-background-depth-2 p-2 flex items-center gap-2">
+      <div className="bg-bolt-elements-background-depth-2 p-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <IconButton icon="i-ph:arrow-clockwise" onClick={reloadPreview} />
           <IconButton
@@ -622,7 +622,6 @@ export const Preview = memo(() => {
             className={isSelectionMode ? 'bg-bolt-elements-background-depth-3' : ''}
           />
         </div>
-
 
         <div className="flex items-center gap-2">
           <IconButton
@@ -656,7 +655,7 @@ export const Preview = memo(() => {
             title={isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
           />
 
-          <div className="flex items-center relative ml-auto">
+          <div className="flex items-center relative">
             <IconButton
               icon="i-ph:list"
               onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
