@@ -6,7 +6,6 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { classNames } from '~/utils/classNames';
 import { TabManagement } from '~/components/@settings/shared/components/TabManagement';
 import { TabTile } from '~/components/@settings/shared/components/TabTile';
-import { useUpdateCheck } from '~/lib/hooks/useUpdateCheck';
 import { useFeatures } from '~/lib/hooks/useFeatures';
 import { useNotifications } from '~/lib/hooks/useNotifications';
 import { useConnectionStatus } from '~/lib/hooks/useConnectionStatus';
@@ -32,10 +31,8 @@ import FeaturesTab from '~/components/@settings/tabs/features/FeaturesTab';
 import { DataTab } from '~/components/@settings/tabs/data/DataTab';
 import DebugTab from '~/components/@settings/tabs/debug/DebugTab';
 import { EventLogsTab } from '~/components/@settings/tabs/event-logs/EventLogsTab';
-import UpdateTab from '~/components/@settings/tabs/update/UpdateTab';
 import ConnectionsTab from '~/components/@settings/tabs/connections/ConnectionsTab';
 import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/CloudProvidersTab';
-import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
 import TaskManagerTab from '~/components/@settings/tabs/task-manager/TaskManagerTab';
 
@@ -74,17 +71,15 @@ const TAB_DESCRIPTIONS: Record<TabType, string> = {
   data: 'Manage your data and storage',
   'cloud-providers': 'Configure cloud AI providers and models',
   'local-providers': 'Configure local AI providers and models',
-  'service-status': 'Monitor cloud LLM service status',
   connection: 'Check connection status and settings',
   debug: 'Debug tools and system information',
   'event-logs': 'View system events and logs',
-  update: 'Check for updates and release notes',
   'task-manager': 'Monitor system resources and processes',
   'tab-management': 'Configure visible tabs and their order',
 };
 
 // Beta status for experimental features
-const BETA_TABS = new Set<TabType>(['task-manager', 'service-status', 'update', 'local-providers']);
+const BETA_TABS = new Set<TabType>(['task-manager']);
 
 const BetaLabel = () => (
   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20">
@@ -164,7 +159,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const profile = useStore(profileStore) as Profile;
 
   // Status hooks
-  const { hasUpdate, currentVersion, acknowledgeUpdate } = useUpdateCheck();
   const { hasNewFeatures, unviewedFeatures, acknowledgeAllFeatures } = useFeatures();
   const { hasUnreadNotifications, unreadNotifications, markAllAsRead } = useNotifications();
   const { hasConnectionIssues, currentIssue, acknowledgeIssue } = useConnectionStatus();
@@ -329,58 +323,13 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <DebugTab />;
       case 'event-logs':
         return <EventLogsTab />;
-      case 'update':
-        return <UpdateTab />;
       case 'task-manager':
         return <TaskManagerTab />;
-      case 'service-status':
-        return <ServiceStatusTab />;
       default:
         return null;
     }
   };
 
-  const getTabUpdateStatus = (tabId: TabType): boolean => {
-    switch (tabId) {
-      case 'update':
-        return hasUpdate;
-      case 'features':
-        return hasNewFeatures;
-      case 'notifications':
-        return hasUnreadNotifications;
-      case 'connection':
-        return hasConnectionIssues;
-      case 'debug':
-        return hasActiveWarnings;
-      default:
-        return false;
-    }
-  };
-
-  const getStatusMessage = (tabId: TabType): string => {
-    switch (tabId) {
-      case 'update':
-        return `New update available (v${currentVersion})`;
-      case 'features':
-        return `${unviewedFeatures.length} new feature${unviewedFeatures.length === 1 ? '' : 's'} to explore`;
-      case 'notifications':
-        return `${unreadNotifications.length} unread notification${unreadNotifications.length === 1 ? '' : 's'}`;
-      case 'connection':
-        return currentIssue === 'disconnected'
-          ? 'Connection lost'
-          : currentIssue === 'high-latency'
-            ? 'High latency detected'
-            : 'Connection issues detected';
-      case 'debug': {
-        const warnings = activeIssues.filter((i) => i.type === 'warning').length;
-        const errors = activeIssues.filter((i) => i.type === 'error').length;
-
-        return `${warnings} warning${warnings === 1 ? '' : 's'}, ${errors} error${errors === 1 ? '' : 's'}`;
-      }
-      default:
-        return '';
-    }
-  };
 
   const handleTabClick = (tabId: TabType) => {
     setLoadingTab(tabId);
@@ -389,9 +338,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
 
     // Acknowledge notifications based on tab
     switch (tabId) {
-      case 'update':
-        acknowledgeUpdate();
-        break;
       case 'features':
         acknowledgeAllFeatures();
         break;
@@ -518,20 +464,18 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                       getTabComponent(activeTab)
                     ) : (
                       <motion.div
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative"
+                        className="flex flex-col gap-2 relative"
                         variants={gridLayoutVariants}
                         initial="hidden"
                         animate="visible"
                       >
                         <AnimatePresence mode="popLayout">
                           {(visibleTabs as TabWithDevType[]).map((tab: TabWithDevType) => (
-                            <motion.div key={tab.id} layout variants={itemVariants} className="aspect-[1.5/1]">
+                            <motion.div key={tab.id} layout variants={itemVariants}>
                               <TabTile
                                 tab={tab}
                                 onClick={() => handleTabClick(tab.id as TabType)}
                                 isActive={activeTab === tab.id}
-                                hasUpdate={getTabUpdateStatus(tab.id)}
-                                statusMessage={getStatusMessage(tab.id)}
                                 description={TAB_DESCRIPTIONS[tab.id]}
                                 isLoading={loadingTab === tab.id}
                                 className="h-full relative"
