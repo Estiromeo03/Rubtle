@@ -131,7 +131,7 @@ export default function FeaturesTab() {
     }
 
     if (autoSelectTemplate === undefined) {
-      setAutoSelectTemplate(true); // Default: ON - Enable auto-select templates
+      setAutoSelectTemplate(false); // Default: OFF - Disable auto-select templates
     }
 
     if (promptId === undefined) {
@@ -193,7 +193,7 @@ export default function FeaturesTab() {
         description: 'Automatically select starter template',
         icon: 'i-ph:selection',
         enabled: autoSelectTemplate,
-        tooltip: 'Enabled by default to automatically select the most appropriate starter template',
+        tooltip: 'Disabled by default. When enabled, automatically selects the most appropriate starter template',
       },
       {
         id: 'contextOptimization',
