@@ -2,23 +2,16 @@ import React from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
-import { ModelSelector } from '~/components/chat/ModelSelector';
 import { APIKeyManager } from './APIKeyManager';
-import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
 import FilePreview from './FilePreview';
 import { ScreenshotStateManager } from './ScreenshotStateManager';
 import { SendButton } from './SendButton.client';
 import { IconButton } from '~/components/ui/IconButton';
 import { toast } from 'react-toastify';
 import { SpeechRecognitionButton } from '~/components/chat/SpeechRecognition';
-import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportChatButton';
-import { SupabaseConnection } from './SupabaseConnection';
-import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import type { ProviderInfo } from '~/types/model';
 
 interface ChatBoxProps {
-  isModelSettingsCollapsed: boolean;
-  setIsModelSettingsCollapsed: (collapsed: boolean) => void;
   provider: any;
   providerList: any[];
   modelList: any[];
@@ -38,9 +31,6 @@ interface ChatBoxProps {
   startListening: () => void;
   stopListening: () => void;
   chatStarted: boolean;
-  exportChat?: () => void;
-  qrModalOpen: boolean;
-  setQrModalOpen: (open: boolean) => void;
   handleFileUpload: () => void;
   setProvider?: ((provider: ProviderInfo) => void) | undefined;
   model?: string | undefined;
@@ -51,8 +41,6 @@ interface ChatBoxProps {
   handleStop?: (() => void) | undefined;
   enhancingPrompt?: boolean | undefined;
   enhancePrompt?: (() => void) | undefined;
-  chatMode?: 'discuss' | 'build';
-  setChatMode?: (mode: 'discuss' | 'build') => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -71,30 +59,18 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <div>
         <ClientOnly>
           {() => (
-            <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
-              <ModelSelector
-                key={props.provider?.name + ':' + props.modelList.length}
-                model={props.model}
-                setModel={props.setModel}
-                modelList={props.modelList}
-                provider={props.provider}
-                setProvider={props.setProvider}
-                providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
-                apiKeys={props.apiKeys}
-                modelLoading={props.isModelLoading}
-              />
-              {(props.providerList || []).length > 0 &&
-                props.provider &&
-                (!LOCAL_PROVIDERS.includes(props.provider.name) || 'OpenAILike') && (
-                  <APIKeyManager
-                    provider={props.provider}
-                    apiKey={props.apiKeys[props.provider.name] || ''}
-                    setApiKey={(key) => {
-                      props.onApiKeysChange(props.provider.name, key);
-                    }}
-                  />
-                )}
-            </div>
+            <APIKeyManager
+              provider={props.provider}
+              providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+              setProvider={props.setProvider}
+              model={props.model || ''}
+              modelList={props.modelList}
+              setModel={props.setModel}
+              apiKey={props.apiKeys[props.provider.name] || ''}
+              setApiKey={(key) => {
+                props.onApiKeysChange(props.provider.name, key);
+              }}
+            />
           )}
         </ClientOnly>
       </div>
@@ -116,15 +92,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           />
         )}
       </ClientOnly>
-      <div
-        className={classNames('relative border border-[#444] rounded-md bg-gray-800')}
-      >
+      <div className="relative mt-4">
         <textarea
           ref={props.textareaRef}
-          className={classNames(
-            'w-full p-2 pr-14 outline-none resize-none bg-transparent text-sm text-gray-200 placeholder-gray-400',
-            'transition-all duration-200'
-          )}
+          className="w-full h-40 bg-black border border-gray-500 rounded-xl p-4 text-white text-xl resize-none placeholder-white"
           onDragEnter={(e) => {
             e.preventDefault();
             e.currentTarget.style.border = '2px solid #666';
@@ -185,92 +156,48 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={props.chatMode === 'build' ? 'Code with words what you want' : 'What would you like to discuss?'}
+          placeholder="Describe what you want…"
           translate="no"
         />
-        <ClientOnly>
-          {() => (
-            <SendButton
-              show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
-              isStreaming={props.isStreaming}
-              disabled={!props.providerList || props.providerList.length === 0}
-              onClick={(event) => {
-                if (props.isStreaming) {
-                  props.handleStop?.();
-                  return;
-                }
-
-                if (props.input.length > 0 || props.uploadedFiles.length > 0) {
-                  props.handleSendMessage?.(event);
-                }
-              }}
-            />
-          )}
-        </ClientOnly>
-        <div className="flex justify-between items-center text-sm p-2 pt-1">
-          <div className="flex gap-1 items-center">
-            <IconButton title="Upload file" className="transition-all border border-[#444]" onClick={() => props.handleFileUpload()}>
-              <div className="i-ph:paperclip text-gray-200 text-xl"></div>
-            </IconButton>
-            <IconButton
-              title="Enhance prompt"
-              disabled={props.input.length === 0 || props.enhancingPrompt}
-              className={classNames('transition-all border border-[#444]', props.enhancingPrompt ? 'opacity-100' : '')}
-              onClick={() => {
-                props.enhancePrompt?.();
-                toast.success('Prompt enhanced!');
-              }}
-            >
-              {props.enhancingPrompt ? (
-                <div className="i-svg-spinners:90-ring-with-bg text-gray-200 text-xl animate-spin"></div>
-              ) : (
-                <div className="i-bolt:stars text-gray-200 text-xl"></div>
-              )}
-            </IconButton>
-
-            <SpeechRecognitionButton
-              isListening={props.isListening}
-              onStart={props.startListening}
-              onStop={props.stopListening}
-              disabled={props.isStreaming}
-            />
-            {props.chatStarted && (
-              <IconButton
-                title="Discuss"
-                className={classNames(
-                  'transition-all flex items-center gap-1 px-1.5 border border-[#444]',
-                  props.chatMode === 'discuss' ? 'bg-gray-700 text-gray-200' : 'bg-gray-600 text-gray-200',
-                )}
-                onClick={() => {
-                  props.setChatMode?.(props.chatMode === 'discuss' ? 'build' : 'discuss');
-                }}
-              >
-                <div className="i-ph:chats text-gray-200 text-xl" />
-                {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
-              </IconButton>
+        <div className="absolute bottom-2 right-3 flex gap-3">
+          <IconButton title="Enhance prompt" disabled={props.input.length === 0 || props.enhancingPrompt} onClick={() => {
+            props.enhancePrompt?.();
+            toast.success('Prompt enhanced!');
+          }}>
+            {props.enhancingPrompt ? (
+              <div className="i-svg-spinners:90-ring-with-bg text-gray-200 text-xl animate-spin"></div>
+            ) : (
+              <div className="i-bolt:stars text-gray-200 text-xl"></div>
             )}
-            {props.chatStarted && <ClientOnly>{() => <ExportChatButton exportChat={props.exportChat} />}</ClientOnly>}
-            <IconButton
-              title="Model Settings"
-              className={classNames(
-                'transition-all flex items-center gap-1 border border-[#444]',
-                props.isModelSettingsCollapsed ? 'bg-gray-700 text-gray-200' : 'bg-gray-600 text-gray-200',
-              )}
-              onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
-              disabled={!props.providerList || props.providerList.length === 0}
-            >
-              <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-gray-200 text-lg`} />
-              {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
-            </IconButton>
-          </div>
-          {props.input.length > 3 ? (
-            <div className="text-xs text-gray-400">
-              Use <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-800">Shift</kbd> +{' '}
-              <kbd className="kdb px-1.5 py-0.5 rounded bg-gray-800">Return</kbd> a new line
-            </div>
-          ) : null}
-          <SupabaseConnection />
-          <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />
+          </IconButton>
+          <IconButton title="Upload file" onClick={() => props.handleFileUpload()}>
+            <div className="i-ph:paperclip text-gray-200 text-xl"></div>
+          </IconButton>
+          <SpeechRecognitionButton
+            isListening={props.isListening}
+            onStart={props.startListening}
+            onStop={props.stopListening}
+            disabled={props.isStreaming}
+          />
+          <ClientOnly>
+            {() => (
+              <SendButton
+                show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
+                isStreaming={props.isStreaming}
+                disabled={!props.providerList || props.providerList.length === 0}
+                onClick={(event) => {
+                  if (props.isStreaming) {
+                    props.handleStop?.();
+                    return;
+                  }
+
+                  if (props.input.length > 0 || props.uploadedFiles.length > 0) {
+                    props.handleSendMessage?.(event);
+                  }
+                }}
+              />
+            )}
+          </ClientOnly>
         </div>
       </div>
     </div>
