@@ -140,6 +140,16 @@ export class WorkbenchStore {
     this.#terminalStore.toggleTerminal(value);
   }
 
+  async forceInstall() {
+    this.toggleTerminal(true);
+    const shell = this.boltTerminal;
+    await shell.ready();
+    await shell.executeCommand(
+      `force-install-${Date.now()}`,
+      'npm install --legacy-peer-deps',
+    );
+  }
+
   attachTerminal(terminal: ITerminal) {
     this.#terminalStore.attachTerminal(terminal);
   }

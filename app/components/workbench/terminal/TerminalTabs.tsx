@@ -32,6 +32,10 @@ export const TerminalTabs = memo(() => {
     }
   };
 
+  const handleForceInstall = () => {
+    workbenchStore.forceInstall();
+  };
+
   useEffect(() => {
     const { current: terminal } = terminalPanelRef;
 
@@ -131,7 +135,15 @@ export const TerminalTabs = memo(() => {
                 </React.Fragment>
               );
             })}
-            {terminalCount < MAX_TERMINALS && <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />}
+            {terminalCount < MAX_TERMINALS && (
+              <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />
+            )}
+            <IconButton
+              icon="i-ph:package"
+              title="Force Install"
+              size="md"
+              onClick={handleForceInstall}
+            />
             <IconButton
               className="ml-auto"
               icon="i-ph:caret-down"
