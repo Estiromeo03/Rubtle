@@ -3,7 +3,6 @@ import { ClientOnly } from 'remix-utils/client-only';
 import { useState } from 'react';
 import { chatStore } from '~/lib/stores/chat';
 import { classNames } from '~/utils/classNames';
-import { HeaderActionButtons } from './HeaderActionButtons.client';
 import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
 import { SettingsButton } from '~/components/ui/SettingsButton';
 import { ControlPanel } from '~/components/@settings';
@@ -26,7 +25,7 @@ export function Header() {
           <img src="/RUBTLELOGO.svg" alt="logo" className="w-[90px]" />
         </a>
       </div>
-      {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
+      {chat.started && ( // Display ChatDescription and SettingsButton only when the chat has started.
         <>
           <span className="flex-1 px-4 truncate text-center text-bolt-elements-textPrimary">
             <ClientOnly>{() => <ChatDescription />}</ClientOnly>
@@ -34,7 +33,6 @@ export function Header() {
           <ClientOnly>
             {() => (
               <div className="flex items-center gap-2 mr-1">
-                <HeaderActionButtons />
                 <SettingsButton onClick={() => setSettingsOpen(true)} />
               </div>
             )}
