@@ -36,6 +36,8 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
   const [isEditing, setIsEditing] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
   const [isEnvKeySet, setIsEnvKeySet] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
 
   // Reset states and load saved key when provider changes
   useEffect(() => {
@@ -73,17 +75,28 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
     checkEnvApiKey();
   }, [checkEnvApiKey]);
 
-  const handleSave = () => {
-    // Save to parent state
-    setApiKey(tempKey);
+  // Automatically save the API key with a short debounce when it changes
+  useEffect(() => {
+    if (!isEditing) return;
 
-    // Save to cookies
-    const currentKeys = getApiKeysFromCookies();
-    const newKeys = { ...currentKeys, [provider.name]: tempKey };
-    Cookies.set('apiKeys', JSON.stringify(newKeys));
+    setIsSaving(true);
+    const timeout = setTimeout(() => {
+      setApiKey(tempKey);
 
-    setIsEditing(false);
-  };
+      const currentKeys = getApiKeysFromCookies();
+      const newKeys = { ...currentKeys, [provider.name]: tempKey };
+      Cookies.set('apiKeys', JSON.stringify(newKeys));
+
+      setIsSaving(false);
+      setShowSaved(true);
+
+      const hide = setTimeout(() => setShowSaved(false), 1500);
+      return () => clearTimeout(hide);
+    }, 800);
+
+    return () => clearTimeout(timeout);
+  }, [tempKey, isEditing, provider.name, setApiKey]);
+
 
   return (
     <div className="flex items-center justify-between py-3 px-1">
@@ -125,13 +138,11 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
                         bg-bolt-elements-prompt-background text-bolt-elements-textPrimary 
                         focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus"
             />
-            <IconButton
-              onClick={handleSave}
-              title="Save API Key"
-              className="bg-green-500/10 hover:bg-green-500/20 text-green-500"
-            >
-              <div className="i-ph:check w-4 h-4" />
-            </IconButton>
+            {isSaving ? (
+              <div className="i-svg-spinners:90-ring-with-bg w-4 h-4 text-green-500 animate-spin" />
+            ) : showSaved ? (
+              <div className="i-ph:check w-4 h-4 text-green-500" />
+            ) : null}
             <IconButton
               onClick={() => setIsEditing(false)}
               title="Cancel"
