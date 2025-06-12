@@ -182,6 +182,13 @@ export const Workbench = memo(
                         <div className="i-ph:terminal" />
                         Toggle Terminal
                       </PanelHeaderButton>
+                      <a
+                        href="/editor"
+                        className="mr-1 text-sm flex items-center gap-1.5 px-1.5 rounded-md py-0.5 text-bolt-elements-item-contentDefault bg-transparent hover:text-bolt-elements-item-contentActive hover:bg-bolt-elements-item-backgroundActive"
+                      >
+                        <div className="i-ph:pencil-line" />
+                        Editor
+                      </a>
                       <DropdownMenu.Root>
                         <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed">
                           <div className="i-ph:box-arrow-up" />

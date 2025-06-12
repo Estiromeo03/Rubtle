@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { json, type MetaFunction } from '@remix-run/cloudflare';
+import { useStore } from '@nanostores/react';
+import { workbenchStore } from '~/lib/stores/workbench';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 import { Header } from '~/components/header/Header';
 
@@ -20,32 +22,66 @@ export const meta: MetaFunction = () => {
 export const loader = () => json({});
 
 export default function EditorDemo() {
-  const [elements, setElements] = useState<ElementData[]>([
-    {
-      id: '1',
-      tag: 'div',
-      content: 'Card 1',
-      styles: {
-        backgroundColor: '#eee',
-        padding: '16px',
-        margin: '8px',
-        color: '#000',
-        fontSize: '16px',
-      },
-    },
-    {
-      id: '2',
-      tag: 'div',
-      content: 'Card 2',
-      styles: {
-        backgroundColor: '#ddd',
-        padding: '16px',
-        margin: '8px',
-        color: '#000',
-        fontSize: '16px',
-      },
-    },
-  ]);
+  const currentDocument = useStore(workbenchStore.currentDocument);
+  const [elements, setElements] = useState<ElementData[]>([]);
+
+  useEffect(() => {
+    if (!currentDocument) {
+      return;
+    }
+
+    try {
+      const doc = new DOMParser().parseFromString(currentDocument.value, 'text/html');
+      const children = Array.from(doc.body.children) as HTMLElement[];
+
+      if (children.length) {
+        setElements(
+          children.map((child, idx) => {
+            const styles: Record<string, string> = {};
+            for (const name of Array.from(child.style)) {
+              styles[name] = child.style.getPropertyValue(name);
+            }
+            return {
+              id: String(idx + 1),
+              tag: child.tagName.toLowerCase(),
+              content: child.innerHTML,
+              styles,
+            };
+          }),
+        );
+      } else {
+        // fallback default elements
+        setElements([
+          {
+            id: '1',
+            tag: 'div',
+            content: 'Card 1',
+            styles: {
+              backgroundColor: '#eee',
+              padding: '16px',
+              margin: '8px',
+              color: '#000',
+              fontSize: '16px',
+            },
+          },
+          {
+            id: '2',
+            tag: 'div',
+            content: 'Card 2',
+            styles: {
+              backgroundColor: '#ddd',
+              padding: '16px',
+              margin: '8px',
+              color: '#000',
+              fontSize: '16px',
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to parse current document', err);
+    }
+  }, [currentDocument]);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
 
   const updateElementProps = (id: string, updated: Partial<ElementData>) => {
@@ -57,6 +93,21 @@ export default function EditorDemo() {
       ),
     );
   };
+
+  useEffect(() => {
+    if (!currentDocument) return;
+
+    const styleString = (styles: React.CSSProperties) =>
+      Object.entries(styles)
+        .map(([k, v]) => `${k}:${v}`)
+        .join(';');
+
+    const html = elements
+      .map((el) => `<${el.tag} style="${styleString(el.styles)}">${el.content}</${el.tag}>`)
+      .join('\n');
+
+    workbenchStore.setCurrentDocumentContent(html);
+  }, [elements, currentDocument]);
 
   const selectedElement = elements.find((e) => e.id === selectedElementId);
 
