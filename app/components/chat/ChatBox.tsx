@@ -59,7 +59,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   return (
     <div
       className={classNames(
-        'relative bg-gray-900 text-gray-200 p-2 rounded-md border border-[#444] w-full max-w-chat mx-auto z-prompt',
+        'relative bg-gray-900/40 backdrop-blur-md text-gray-200 p-2 rounded-md border border-[#444] w-full max-w-chat mx-auto z-prompt',
 
         /*
          * {
@@ -117,7 +117,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
       </ClientOnly>
       <div
-        className={classNames('relative border border-[#444] rounded-md bg-gray-900')}
+        className={classNames('relative border border-[#444] rounded-md bg-gray-900/30 backdrop-blur-md')}
       >
         <textarea
           ref={props.textareaRef}
