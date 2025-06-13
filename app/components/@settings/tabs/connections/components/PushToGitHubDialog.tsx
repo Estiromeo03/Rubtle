@@ -13,6 +13,7 @@ import { workbenchStore } from '~/lib/stores/workbench';
 import { extractRelativePath } from '~/utils/diff';
 import { formatSize } from '~/utils/formatSize';
 import type { FileMap, File } from '~/lib/stores/files';
+import { useSettingsStore } from '~/lib/stores/settings';
 
 // UI Components
 import { Badge, EmptyState, StatusIndicator, SearchInput } from '~/components/ui';
@@ -37,6 +38,7 @@ interface GitHubRepo {
 }
 
 export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDialogProps) {
+  const { openSettings, setSelectedTab } = useSettingsStore();
   const [repoName, setRepoName] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -452,15 +454,19 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
                     >
                       Close
                     </motion.button>
-                    <motion.a
-                      href="/settings/connections"
+                    <motion.button
                       className="px-4 py-2 rounded-lg bg-purple-500 text-white text-sm hover:bg-purple-600 inline-flex items-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        handleClose();
+                        openSettings();
+                        setSelectedTab('connection');
+                      }}
                     >
                       <div className="i-ph:gear" />
                       Go to Settings
-                    </motion.a>
+                    </motion.button>
                   </div>
                 </div>
               </Dialog.Content>
