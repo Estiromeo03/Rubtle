@@ -58,6 +58,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
   const providerSettings: Record<string, IProviderSetting> = JSON.parse(
     parseCookies(cookieHeader || '').providers || '{}',
   );
+  const promptRules = parseCookies(cookieHeader || '').promptRules || '';
 
   const stream = new SwitchableStream();
 
@@ -252,6 +253,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               chatMode,
               summary,
               messageSliceId,
+              promptRules,
             });
 
             result.mergeIntoDataStream(dataStream);
@@ -292,6 +294,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           chatMode,
           summary,
           messageSliceId,
+          promptRules,
         });
 
         (async () => {

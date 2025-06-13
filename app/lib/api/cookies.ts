@@ -31,3 +31,8 @@ export function getProviderSettingsFromCookie(cookieHeader: string | null): Reco
   const cookies = parseCookies(cookieHeader);
   return cookies.providers ? JSON.parse(cookies.providers) : {};
 }
+
+export function getPromptRulesFromCookie(cookieHeader: string | null): string {
+  const cookies = parseCookies(cookieHeader);
+  return cookies.promptRules ? cookies.promptRules : '';
+}

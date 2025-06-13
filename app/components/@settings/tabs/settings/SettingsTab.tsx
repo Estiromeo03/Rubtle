@@ -5,6 +5,7 @@ import { classNames } from '~/utils/classNames';
 import { Switch } from '~/components/ui/Switch';
 import type { UserProfile } from '~/components/@settings/core/types';
 import { isMac } from '~/utils/os';
+import { useSettings } from '~/lib/hooks/useSettings';
 
 // Helper to get modifier key symbols/text
 const getModifierSymbol = (modifier: string): string => {
@@ -33,9 +34,16 @@ export default function SettingsTab() {
         };
   });
 
+  const { promptRules, setPromptRules } = useSettings();
+  const [rules, setRules] = useState<string>(() => promptRules);
+
   useEffect(() => {
     setCurrentTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }, []);
+
+  useEffect(() => {
+    setPromptRules(rules);
+  }, [rules, setPromptRules]);
 
   // Save settings automatically when they change
   useEffect(() => {
@@ -209,6 +217,36 @@ export default function SettingsTab() {
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* Prompt Rules */}
+      <motion.div
+        className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-sm dark:shadow-none p-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <div className="i-ph:list-plus-fill w-4 h-4 text-purple-500" />
+          <span className="text-sm font-medium text-bolt-elements-textPrimary">Rules</span>
+        </div>
+        <textarea
+          value={rules}
+          onChange={(e) => setRules(e.target.value)}
+          className={classNames(
+            'w-full p-2 rounded-lg text-sm',
+            'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
+            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+            'text-bolt-elements-textPrimary',
+            'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+            'transition-all duration-200',
+          )}
+          rows={4}
+          placeholder="Add additional prompt rules here"
+        />
+        <p className="text-xs text-bolt-elements-textSecondary mt-2">
+          These rules will be appended to the system prompt.
+        </p>
       </motion.div>
     </div>
   );

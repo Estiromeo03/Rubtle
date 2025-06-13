@@ -123,6 +123,7 @@ export class ImportExportService {
           // Prompt settings
           promptId: this._safeGetItem('promptId'),
           cachedPrompt: allCookies.cachedPrompt,
+          promptRules: allCookies.promptRules,
         },
 
         // Connections
@@ -436,7 +437,7 @@ export class ImportExportService {
       }
 
       // Import UI cookies
-      const uiCookies = ['tabConfiguration', 'cachedPrompt'];
+      const uiCookies = ['tabConfiguration', 'cachedPrompt', 'promptRules'];
       uiCookies.forEach((key) => {
         if (data.ui[key]) {
           try {
@@ -564,6 +565,7 @@ export class ImportExportService {
             'providers',
             'tabConfiguration',
             'cachedPrompt',
+            'promptRules',
             'isDebugEnabled',
             'eventLogs',
           ].includes(key);

@@ -3,6 +3,7 @@ import {
   isDebugMode,
   isEventLogsEnabled,
   promptStore,
+  promptRulesStore,
   providersStore,
   latestBranchStore,
   autoSelectStarterTemplate,
@@ -16,6 +17,7 @@ import {
   updateContextOptimization,
   updateEventLogs,
   updatePromptId,
+  updatePromptRules,
 } from '~/lib/stores/settings';
 import { useCallback, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -31,6 +33,7 @@ export interface Settings {
   eventLogs: boolean;
   timezone: string;
   tabConfiguration: TabWindowConfig;
+  promptRules: string;
 }
 
 export interface UseSettingsReturn {
@@ -40,6 +43,7 @@ export interface UseSettingsReturn {
   setNotifications: (enabled: boolean) => void;
   setEventLogs: (enabled: boolean) => void;
   setTimezone: (timezone: string) => void;
+  setPromptRules: (rules: string) => void;
   settings: Settings;
 
   // Provider settings
@@ -53,6 +57,7 @@ export interface UseSettingsReturn {
   eventLogs: boolean;
   promptId: string;
   setPromptId: (promptId: string) => void;
+  promptRules: string;
   isLatestBranch: boolean;
   enableLatestBranch: (enabled: boolean) => void;
   autoSelectTemplate: boolean;
@@ -76,6 +81,7 @@ export function useSettings(): UseSettingsReturn {
   const debug = useStore(isDebugMode);
   const eventLogs = useStore(isEventLogsEnabled);
   const promptId = useStore(promptStore);
+  const promptRules = useStore(promptRulesStore);
   const isLatestBranch = useStore(latestBranchStore);
   const autoSelectTemplate = useStore(autoSelectStarterTemplate);
   const [activeProviders, setActiveProviders] = useState<ProviderInfo[]>([]);
@@ -90,6 +96,7 @@ export function useSettings(): UseSettingsReturn {
       eventLogs: storedSettings?.eventLogs ?? true,
       timezone: storedSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
       tabConfiguration,
+      promptRules: storedSettings?.promptRules || '',
     };
   });
 
@@ -129,6 +136,12 @@ export function useSettings(): UseSettingsReturn {
     updatePromptId(id);
     logStore.logSystem(`Prompt template updated to ${id}`);
   }, []);
+
+  const setPromptRules = useCallback((rules: string) => {
+    updatePromptRules(rules);
+    logStore.logSystem('Prompt rules updated');
+    saveSettings({ promptRules: rules });
+  }, [saveSettings]);
 
   const enableLatestBranch = useCallback((enabled: boolean) => {
     updateLatestBranch(enabled);
@@ -193,6 +206,8 @@ export function useSettings(): UseSettingsReturn {
     setEventLogs,
     promptId,
     setPromptId,
+    promptRules,
+    setPromptRules,
     isLatestBranch,
     enableLatestBranch,
     autoSelectTemplate,

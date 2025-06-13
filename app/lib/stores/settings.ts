@@ -120,6 +120,7 @@ const SETTINGS_KEYS = {
   EVENT_LOGS: 'isEventLogsEnabled',
   PROMPT_ID: 'promptId',
   DEVELOPER_MODE: 'isDeveloperMode',
+  PROMPT_RULES: 'promptRules',
 } as const;
 
 // Initialize settings from localStorage or defaults
@@ -148,6 +149,7 @@ const getInitialSettings = () => {
     contextOptimization: getStoredBoolean(SETTINGS_KEYS.CONTEXT_OPTIMIZATION, true),
     eventLogs: getStoredBoolean(SETTINGS_KEYS.EVENT_LOGS, true),
     promptId: isBrowser ? localStorage.getItem(SETTINGS_KEYS.PROMPT_ID) || 'default' : 'default',
+    promptRules: isBrowser ? localStorage.getItem(SETTINGS_KEYS.PROMPT_RULES) || '' : '',
     developerMode: getStoredBoolean(SETTINGS_KEYS.DEVELOPER_MODE, false),
   };
 };
@@ -160,6 +162,7 @@ export const autoSelectStarterTemplate = atom<boolean>(initialSettings.autoSelec
 export const enableContextOptimizationStore = atom<boolean>(initialSettings.contextOptimization);
 export const isEventLogsEnabled = atom<boolean>(initialSettings.eventLogs);
 export const promptStore = atom<string>(initialSettings.promptId);
+export const promptRulesStore = atom<string>(initialSettings.promptRules);
 
 // Helper functions to update settings with persistence
 export const updateLatestBranch = (enabled: boolean) => {
@@ -185,6 +188,12 @@ export const updateEventLogs = (enabled: boolean) => {
 export const updatePromptId = (id: string) => {
   promptStore.set(id);
   localStorage.setItem(SETTINGS_KEYS.PROMPT_ID, id);
+};
+
+export const updatePromptRules = (rules: string) => {
+  promptRulesStore.set(rules);
+  localStorage.setItem(SETTINGS_KEYS.PROMPT_RULES, rules);
+  Cookies.set('promptRules', rules);
 };
 
 // Initialize tab configuration from localStorage or defaults
