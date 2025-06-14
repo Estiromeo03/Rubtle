@@ -80,7 +80,20 @@ const parseSelectedTemplate = (llmOutput: string): { template: string; title: st
   }
 };
 
-export const selectStarterTemplate = async (options: { message: string; model: string; provider: ProviderInfo }) => {
+export const selectStarterTemplate = async (options: {
+  message: string;
+  model: string;
+  provider: ProviderInfo;
+}) => {
+  // Allow disabling template selection entirely via environment variable
+  const disableTemplates =
+    process.env.DISABLE_STARTER_TEMPLATES === 'true' ||
+    import.meta.env?.VITE_DISABLE_STARTER_TEMPLATES === 'true';
+
+  if (disableTemplates) {
+    return { template: 'blank', title: '' };
+  }
+
   const { message, model, provider } = options;
   const requestBody = {
     message,
