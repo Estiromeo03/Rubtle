@@ -53,9 +53,12 @@ interface ChatBoxProps {
   enhancePrompt?: (() => void) | undefined;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
+  rules?: string;
+  setRules?: (rules: string) => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
+  const [showRules, setShowRules] = React.useState(false);
   return (
     <div
       className={classNames(
@@ -116,6 +119,14 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           />
         )}
       </ClientOnly>
+      {showRules && (
+        <textarea
+          className="w-full p-2 mb-2 rounded-md border border-[#444] bg-gray-800 text-gray-200 text-sm"
+          placeholder="Additional rules"
+          value={props.rules}
+          onChange={(e) => props.setRules?.(e.target.value)}
+        />
+      )}
       <div
         className={classNames('relative border border-[#444] rounded-md bg-gray-900/30 backdrop-blur-md')}
       >
@@ -226,6 +237,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               ) : (
                 <div className="i-bolt:stars text-gray-200 text-xl"></div>
               )}
+            </IconButton>
+            <IconButton
+              title="Rules"
+              className="transition-all border border-[#444]"
+              onClick={() => setShowRules(!showRules)}
+            >
+              <div className="i-ph:note-pencil text-gray-200 text-xl" />
             </IconButton>
 
             <SpeechRecognitionButton

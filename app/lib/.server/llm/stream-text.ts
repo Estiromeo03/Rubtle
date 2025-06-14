@@ -21,6 +21,7 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
       supabaseUrl?: string;
     };
   };
+  userRules?: string;
 }
 
 const logger = createScopedLogger('stream-text');
@@ -126,6 +127,14 @@ export async function streamText(props: {
         credentials: options?.supabaseConnection?.credentials || undefined,
       },
     }) ?? getSystemPrompt();
+
+  if (options?.userRules && options.userRules.trim()) {
+    systemPrompt = `${systemPrompt}
+
+USER RULES:
+${options.userRules}
+`;
+  }
 
   if (chatMode === 'build' && contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);

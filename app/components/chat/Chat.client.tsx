@@ -27,6 +27,7 @@ import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
+import { useUserRules } from '~/lib/hooks/useUserRules';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -130,8 +131,9 @@ export const ChatImpl = memo(
     const selectedProject = supabaseConn.stats?.projects?.find(
       (project) => project.id === supabaseConn.selectedProjectId,
     );
-    const supabaseAlert = useStore(workbenchStore.supabaseAlert);
-    const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
+  const supabaseAlert = useStore(workbenchStore.supabaseAlert);
+  const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
+  const { rules, setRules } = useUserRules();
 
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
@@ -170,6 +172,7 @@ export const ChatImpl = memo(
         promptId,
         contextOptimization: contextOptimizationEnabled,
         chatMode,
+        userRules: rules,
         supabase: {
           isConnected: supabaseConn.isConnected,
           hasSelectedProject: !!selectedProject,
@@ -568,6 +571,8 @@ export const ChatImpl = memo(
         data={chatData}
         chatMode={chatMode}
         setChatMode={setChatMode}
+        rules={rules}
+        setRules={setRules}
         append={append}
       />
     );
