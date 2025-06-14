@@ -38,6 +38,7 @@ export async function streamText(props: {
   summary?: string;
   messageSliceId?: number;
   chatMode?: 'discuss' | 'build';
+  userRules?: string;
 }) {
   const {
     messages,
@@ -51,6 +52,7 @@ export async function streamText(props: {
     contextFiles,
     summary,
     chatMode,
+    userRules,
   } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
@@ -126,6 +128,10 @@ export async function streamText(props: {
         credentials: options?.supabaseConnection?.credentials || undefined,
       },
     }) ?? getSystemPrompt();
+
+  if (userRules && userRules.trim().length > 0) {
+    systemPrompt = `${systemPrompt}\n\n${userRules}`;
+  }
 
   if (chatMode === 'build' && contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);

@@ -15,6 +15,7 @@ import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportCh
 import { SupabaseConnection } from './SupabaseConnection';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import type { ProviderInfo } from '~/types/model';
+import { UserRulesPopover } from './UserRulesPopover';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -53,6 +54,8 @@ interface ChatBoxProps {
   enhancePrompt?: (() => void) | undefined;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
+  userRules: string;
+  setUserRules: (rules: string) => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -234,6 +237,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               onStop={props.stopListening}
               disabled={props.isStreaming}
             />
+            <UserRulesPopover rules={props.userRules} setRules={props.setUserRules} />
             {props.chatStarted && (
               <IconButton
                 title="Discuss"

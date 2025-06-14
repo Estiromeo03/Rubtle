@@ -149,6 +149,9 @@ export const ChatImpl = memo(
     const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
 
     const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
+    const [userRules, setUserRules] = useState(() => {
+      return Cookies.get('userRules') || '';
+    });
     const {
       messages,
       isLoading,
@@ -170,6 +173,7 @@ export const ChatImpl = memo(
         promptId,
         contextOptimization: contextOptimizationEnabled,
         chatMode,
+        userRules,
         supabase: {
           isConnected: supabaseConn.isConnected,
           hasSelectedProject: !!selectedProject,
@@ -506,6 +510,10 @@ export const ChatImpl = memo(
       Cookies.set('selectedProvider', newProvider.name, { expires: 30 });
     };
 
+    useEffect(() => {
+      Cookies.set('userRules', userRules, { expires: 30 });
+    }, [userRules]);
+
     return (
       <BaseChat
         ref={animationScope}
@@ -569,6 +577,8 @@ export const ChatImpl = memo(
         chatMode={chatMode}
         setChatMode={setChatMode}
         append={append}
+        userRules={userRules}
+        setUserRules={setUserRules}
       />
     );
   },
